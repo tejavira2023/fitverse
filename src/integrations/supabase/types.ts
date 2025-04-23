@@ -11,28 +11,49 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          age: number | null
           coins: number | null
           created_at: string
+          fitnessLevel: string | null
+          gender: string | null
+          goal: string | null
+          healthIssues: string | null
+          height: number | null
           id: string
           last_completed_day: string | null
           name: string | null
           streak: number | null
+          weight: number | null
         }
         Insert: {
+          age?: number | null
           coins?: number | null
           created_at?: string
+          fitnessLevel?: string | null
+          gender?: string | null
+          goal?: string | null
+          healthIssues?: string | null
+          height?: number | null
           id: string
           last_completed_day?: string | null
           name?: string | null
           streak?: number | null
+          weight?: number | null
         }
         Update: {
+          age?: number | null
           coins?: number | null
           created_at?: string
+          fitnessLevel?: string | null
+          gender?: string | null
+          goal?: string | null
+          healthIssues?: string | null
+          height?: number | null
           id?: string
           last_completed_day?: string | null
           name?: string | null
           streak?: number | null
+          weight?: number | null
         }
         Relationships: []
       }
