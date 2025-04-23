@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -22,8 +23,13 @@ const Login = () => {
     setIsLoading(true);
     try {
       await login(email, password);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      // Improved error messaging for unregistered users
+      if (error.message.includes("Invalid login credentials")) {
+        toast.error("Invalid email or password. Please check your credentials or sign up if you don't have an account.");
+      } else {
+        toast.error(error.message || "Failed to login");
+      }
     } finally {
       setIsLoading(false);
     }

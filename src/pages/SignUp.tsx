@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -16,22 +17,27 @@ const SignUp = () => {
   const { signup, isAuthenticated } = useAuth();
   const location = useLocation();
   
-  const from = (location.state as any)?.from?.pathname || "/";
+  const from = (location.state as any)?.from?.pathname || "/account/setup";
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       await signup(email, password, name);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      // Improved error messaging for already registered users
+      if (error.message.includes("User already registered")) {
+        toast.error("This email is already registered. Please use a different email or login to your existing account.");
+      } else {
+        toast.error(error.message || "Failed to create account");
+      }
     } finally {
       setIsLoading(false);
     }
   };
   
   if (isAuthenticated) {
-    return <Navigate to="/account/setup" replace />;
+    return <Navigate to={from} replace />;
   }
   
   return (

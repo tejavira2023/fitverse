@@ -130,11 +130,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           data: {
             name: name,
           },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
       if (error) throw error;
-      toast.success("Account created successfully! Please check your email to verify your account.");
+      toast.success("Account created successfully!");
     } catch (error: any) {
       toast.error(error.message || "Failed to create account");
       throw error;
