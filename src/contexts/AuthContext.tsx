@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -34,7 +33,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<ExtendedUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
 
-  // Fetch user profile data
   const fetchUserProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -49,7 +47,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (data) {
-        // Update the user state with profile data
         setUser(currentUser => {
           if (!currentUser) return null;
           return {
@@ -64,21 +61,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setIsAuthenticated(!!session);
         
         if (session?.user) {
-          // Use setTimeout to prevent potential Supabase authentication deadlock
           setTimeout(() => {
-            // Initialize user with basic data
             setUser({
               ...session.user,
               profile: {} as UserProfile
             });
-            // Then fetch full profile data
             fetchUserProfile(session.user.id);
           }, 0);
         } else {
@@ -87,18 +80,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     );
 
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setIsAuthenticated(!!session);
       
       if (session?.user) {
-        // Initialize user with basic data
         setUser({
           ...session.user,
           profile: {} as UserProfile
         });
-        // Then fetch full profile data
         fetchUserProfile(session.user.id);
       }
     });
@@ -165,7 +155,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           
         if (error) throw error;
         
-        // Update local state
         setUser(currentUser => {
           if (!currentUser) return null;
           return {
@@ -191,7 +180,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const { error } = await supabase.rpc('add_coins', { amount });
         if (error) throw error;
         
-        // Update local state
         setUser(currentUser => {
           if (!currentUser?.profile) return currentUser;
           return {
@@ -216,7 +204,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const { error } = await supabase.rpc('update_streak');
         if (error) throw error;
         
-        // Fetch updated profile data
         fetchUserProfile(user.id);
       } catch (error: any) {
         console.error("Error updating streak:", error);

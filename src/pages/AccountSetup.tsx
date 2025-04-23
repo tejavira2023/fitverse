@@ -51,15 +51,21 @@ const AccountSetup = () => {
         gender: formData.gender,
         goal: formData.goal,
         fitnessLevel: formData.fitnessLevel,
-        healthIssues: formData.healthIssues
+        healthIssues: formData.healthIssues || undefined
       };
       
       await updateUserProfile(updatedData);
       toast.success("Profile setup complete!");
       navigate("/");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to set up profile");
+    } catch (error: any) {
+      console.error("Profile setup error:", error);
+      toast.error("Failed to set up profile", {
+        description: error.message || "Please try again later",
+        action: {
+          label: "Retry",
+          onClick: () => handleSubmit(e)
+        }
+      });
     } finally {
       setIsLoading(false);
     }
