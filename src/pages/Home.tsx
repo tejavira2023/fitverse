@@ -56,116 +56,116 @@ const Home = () => {
       
       {/* Main Features */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <MotionCard
-          as={Link}
-          to="/fitness"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="cursor-pointer hover:shadow-lg transition-all"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="text-primary" />
-              Start Fitness
-            </CardTitle>
-            <CardDescription>Begin your workout journey</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Choose from various fitness programs including weight loss, meditation, weight gain, figure management, and yoga.
-            </p>
-          </CardContent>
-        </MotionCard>
+        <Link to="/fitness">
+          <MotionCard
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="cursor-pointer hover:shadow-lg transition-all"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="text-primary" />
+                Start Fitness
+              </CardTitle>
+              <CardDescription>Begin your workout journey</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Choose from various fitness programs including weight loss, meditation, weight gain, figure management, and yoga.
+              </p>
+            </CardContent>
+          </MotionCard>
+        </Link>
         
-        <MotionCard
-          as={Link}
-          to="/rewards"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="cursor-pointer hover:shadow-lg transition-all"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2">
-              <Award className="text-accent" />
-              Rewards
-            </CardTitle>
-            <CardDescription>Earn coins and unlock achievements</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Complete workouts and quizzes to earn coins. Use them to unlock special content and track your progress.
-            </p>
-          </CardContent>
-        </MotionCard>
+        <Link to="/rewards">
+          <MotionCard
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="cursor-pointer hover:shadow-lg transition-all"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <Award className="text-accent" />
+                Rewards
+              </CardTitle>
+              <CardDescription>Earn coins and unlock achievements</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Complete workouts and quizzes to earn coins. Use them to unlock special content and track your progress.
+              </p>
+            </CardContent>
+          </MotionCard>
+        </Link>
         
-        <MotionCard
-          as={Link}
-          to="/consult"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="cursor-pointer hover:shadow-lg transition-all"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2">
-              <MessageCircle className="text-fitverse-blue" />
-              Consult
-            </CardTitle>
-            <CardDescription>Get expert advice</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Book sessions with our fitness consultants to get personalized guidance on your fitness journey.
-            </p>
-          </CardContent>
-        </MotionCard>
+        <Link to="/consult">
+          <MotionCard
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="cursor-pointer hover:shadow-lg transition-all"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <MessageCircle className="text-fitverse-blue" />
+                Consult
+              </CardTitle>
+              <CardDescription>Get expert advice</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Book sessions with our fitness consultants to get personalized guidance on your fitness journey.
+              </p>
+            </CardContent>
+          </MotionCard>
+        </Link>
         
-        <MotionCard
-          as={Link}
-          to="/account"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="cursor-pointer hover:shadow-lg transition-all"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2">
-              <User className="text-secondary" />
-              My Account
-            </CardTitle>
-            <CardDescription>Manage your profile</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Update your personal information, track your progress, and customize your fitness goals.
-            </p>
-          </CardContent>
-        </MotionCard>
+        <Link to="/account">
+          <MotionCard
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="cursor-pointer hover:shadow-lg transition-all"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <User className="text-secondary" />
+                My Account
+              </CardTitle>
+              <CardDescription>Manage your profile</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Update your personal information, track your progress, and customize your fitness goals.
+              </p>
+            </CardContent>
+          </MotionCard>
+        </Link>
       </div>
       
       {/* Quick Start */}
-      <MotionButton
-        as={Link}
-        to="/fitness"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
-        className="w-full py-6 text-lg gradient-bg mt-6"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
-        Start Today's Workout
-      </MotionButton>
+      <Link to="/fitness">
+        <MotionButton
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+          className="w-full py-6 text-lg gradient-bg mt-6"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          Start Today's Workout
+        </MotionButton>
+      </Link>
     </div>
   );
 };

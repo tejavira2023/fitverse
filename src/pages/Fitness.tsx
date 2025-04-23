@@ -23,15 +23,15 @@ const Fitness = () => {
   return (
     <div className="py-6 space-y-6">
       <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          as={Link}
-          to="/"
-          className="mr-2"
-        >
-          <ArrowLeft className="size-5" />
-        </Button>
+        <Link to="/" className="mr-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="mr-2"
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        </Link>
         <h1 className="text-3xl font-bold">Fitness Programs</h1>
       </div>
       

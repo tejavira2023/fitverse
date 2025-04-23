@@ -93,15 +93,15 @@ const LevelDetail = () => {
       {showConfetti && <ConfettiEffect />}
       
       <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          as={Link}
-          to={`/fitness/${categoryId}`}
-          className="mr-2"
-        >
-          <ArrowLeft className="size-5" />
-        </Button>
+        <Link to={`/fitness/${categoryId}`} className="mr-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="mr-2"
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        </Link>
         <div>
           <h1 className="text-2xl font-bold">{level.name}</h1>
           <p className="text-sm text-muted-foreground">{category.name}</p>

@@ -39,15 +39,15 @@ const FitnessCategory = () => {
   return (
     <div className="py-6 space-y-8">
       <div className="flex items-center">
-        <Button
-          variant="ghost"
-          size="icon"
-          as={Link}
-          to="/fitness"
-          className="mr-2"
-        >
-          <ArrowLeft className="size-5" />
-        </Button>
+        <Link to="/fitness" className="mr-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="mr-2"
+          >
+            <ArrowLeft className="size-5" />
+          </Button>
+        </Link>
         <h1 className="text-3xl font-bold">{category.name}</h1>
       </div>
       
