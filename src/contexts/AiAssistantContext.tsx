@@ -1,6 +1,7 @@
+
 import React, { createContext, useContext, useState, useRef } from "react";
 import { useAuth } from "./AuthContext";
-import { getProfileValue } from "@/types/profile";
+import { getProfileValue, isString } from "@/types/profile";
 
 interface Message {
   id: string;
@@ -140,19 +141,20 @@ export const AiAssistantProvider: React.FC<{ children: React.ReactNode }> = ({
       let dietType = "weight-loss";
       const userGoal = getProfileValue(user, 'goal');
       
-      if (userGoal?.toLowerCase().includes("gain")) {
+      if (userGoal && isString(userGoal) && userGoal.toLowerCase().includes("gain")) {
         dietType = "weight-gain";
-      } else if (userGoal?.toLowerCase().includes("tone") || 
-                userGoal?.toLowerCase().includes("shape") || 
-                userGoal?.toLowerCase().includes("figure")) {
+      } else if (userGoal && isString(userGoal) && 
+                (userGoal.toLowerCase().includes("tone") || 
+                userGoal.toLowerCase().includes("shape") || 
+                userGoal.toLowerCase().includes("figure"))) {
         dietType = "figure-management";
       } else if (lowerCaseMessage.includes("yoga") || 
-                userGoal?.toLowerCase().includes("yoga")) {
+                (userGoal && isString(userGoal) && userGoal.toLowerCase().includes("yoga"))) {
         dietType = "yoga";
       } else if (lowerCaseMessage.includes("meditation") ||
                 lowerCaseMessage.includes("stress") ||
                 lowerCaseMessage.includes("relax") ||
-                userGoal?.toLowerCase().includes("meditation")) {
+                (userGoal && isString(userGoal) && userGoal.toLowerCase().includes("meditation"))) {
         dietType = "meditation";
       }
       
@@ -170,19 +172,20 @@ export const AiAssistantProvider: React.FC<{ children: React.ReactNode }> = ({
       let exerciseType = "weight-loss";
       const userGoal = getProfileValue(user, 'goal');
       
-      if (userGoal?.toLowerCase().includes("gain")) {
+      if (userGoal && isString(userGoal) && userGoal.toLowerCase().includes("gain")) {
         exerciseType = "weight-gain";
-      } else if (userGoal?.toLowerCase().includes("tone") || 
-                userGoal?.toLowerCase().includes("shape") || 
-                userGoal?.toLowerCase().includes("figure")) {
+      } else if (userGoal && isString(userGoal) && 
+                (userGoal.toLowerCase().includes("tone") || 
+                userGoal.toLowerCase().includes("shape") || 
+                userGoal.toLowerCase().includes("figure"))) {
         exerciseType = "figure-management";
       } else if (lowerCaseMessage.includes("yoga") || 
-                userGoal?.toLowerCase().includes("yoga")) {
+                (userGoal && isString(userGoal) && userGoal.toLowerCase().includes("yoga"))) {
         exerciseType = "yoga";
       } else if (lowerCaseMessage.includes("meditation") ||
                 lowerCaseMessage.includes("stress") ||
                 lowerCaseMessage.includes("relax") ||
-                userGoal?.toLowerCase().includes("meditation")) {
+                (userGoal && isString(userGoal) && userGoal.toLowerCase().includes("meditation"))) {
         exerciseType = "meditation";
       }
       

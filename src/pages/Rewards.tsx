@@ -1,11 +1,10 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { Award, Medal, Trophy, Star, Gift } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { getProfileValue } from "@/types/profile";
+import { getProfileValue, isNumber } from "@/types/profile";
 
 // We'll simulate importing framer-motion
 const MotionDiv = motion.div;
@@ -20,40 +19,40 @@ const Rewards = () => {
       title: "3-Day Streak",
       description: "Complete workouts for 3 consecutive days",
       icon: <Award className="size-8 text-yellow-400" />,
-      progress: Math.min(100, ((getProfileValue(user, 'streak') || 0) / 3) * 100),
-      completed: (getProfileValue(user, 'streak') || 0) >= 3,
+      progress: Math.min(100, (((getProfileValue(user, 'streak') as number) || 0) / 3) * 100),
+      completed: ((getProfileValue(user, 'streak') as number) || 0) >= 3,
     },
     {
       id: "streak-7",
       title: "7-Day Streak",
       description: "Complete workouts for 7 consecutive days",
       icon: <Medal className="size-8 text-blue-500" />,
-      progress: Math.min(100, ((getProfileValue(user, 'streak') || 0) / 7) * 100),
-      completed: (getProfileValue(user, 'streak') || 0) >= 7,
+      progress: Math.min(100, (((getProfileValue(user, 'streak') as number) || 0) / 7) * 100),
+      completed: ((getProfileValue(user, 'streak') as number) || 0) >= 7,
     },
     {
       id: "streak-30",
       title: "30-Day Streak",
       description: "Complete workouts for 30 consecutive days",
       icon: <Trophy className="size-8 text-purple-500" />,
-      progress: Math.min(100, ((getProfileValue(user, 'streak') || 0) / 30) * 100),
-      completed: (getProfileValue(user, 'streak') || 0) >= 30,
+      progress: Math.min(100, (((getProfileValue(user, 'streak') as number) || 0) / 30) * 100),
+      completed: ((getProfileValue(user, 'streak') as number) || 0) >= 30,
     },
     {
       id: "coins-50",
       title: "Coin Collector",
       description: "Earn 50 coins through workouts and quizzes",
       icon: <Star className="size-8 text-amber-400" />,
-      progress: Math.min(100, ((getProfileValue(user, 'coins') || 0) / 50) * 100),
-      completed: (getProfileValue(user, 'coins') || 0) >= 50,
+      progress: Math.min(100, (((getProfileValue(user, 'coins') as number) || 0) / 50) * 100),
+      completed: ((getProfileValue(user, 'coins') as number) || 0) >= 50,
     },
     {
       id: "coins-100",
       title: "Fitness Fortune",
       description: "Earn 100 coins through workouts and quizzes",
       icon: <Gift className="size-8 text-green-500" />,
-      progress: Math.min(100, ((getProfileValue(user, 'coins') || 0) / 100) * 100),
-      completed: (getProfileValue(user, 'coins') || 0) >= 100,
+      progress: Math.min(100, (((getProfileValue(user, 'coins') as number) || 0) / 100) * 100),
+      completed: ((getProfileValue(user, 'coins') as number) || 0) >= 100,
     }
   ];
   

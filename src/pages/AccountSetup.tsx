@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { getProfileValue } from "@/types/profile";
-import { UserProfile } from "@/types/profile";
+import { getProfileValue, UserProfile } from "@/types/profile";
 
-// We'll simulate importing framer-motion
 const MotionDiv = motion.div;
 
 const AccountSetup = () => {
@@ -99,7 +96,6 @@ const AccountSetup = () => {
             </CardHeader>
             <form onSubmit={handleSubmit}>
               <CardContent className="space-y-6">
-                {/* Basic Info */}
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
                     <User className="size-8 text-primary" />

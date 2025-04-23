@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { getProfileValue } from "@/types/profile";
 
-// We'll simulate importing framer-motion
 const MotionDiv = motion.div;
 
 const Account = () => {
@@ -30,7 +28,6 @@ const Account = () => {
     healthIssues: getProfileValue(user, 'healthIssues') || ""
   });
   
-  // Update form data when user profile changes
   useEffect(() => {
     if (user) {
       setFormData({
@@ -64,14 +61,14 @@ const Account = () => {
     
     try {
       const updatedData = {
-        name: formData.name,
-        age: formData.age ? parseInt(formData.age as string, 10) : undefined,
-        weight: formData.weight ? parseFloat(formData.weight as string) : undefined,
-        height: formData.height ? parseFloat(formData.height as string) : undefined,
-        gender: formData.gender,
-        goal: formData.goal,
-        fitnessLevel: formData.fitnessLevel,
-        healthIssues: formData.healthIssues
+        name: formData.name.toString(),
+        age: formData.age ? parseInt(formData.age.toString(), 10) : undefined,
+        weight: formData.weight ? parseFloat(formData.weight.toString()) : undefined,
+        height: formData.height ? parseFloat(formData.height.toString()) : undefined,
+        gender: formData.gender.toString(),
+        goal: formData.goal.toString(),
+        fitnessLevel: formData.fitnessLevel.toString(),
+        healthIssues: formData.healthIssues.toString()
       };
       
       await updateUserProfile(updatedData);
@@ -113,7 +110,6 @@ const Account = () => {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-6">
-              {/* Basic Info */}
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">

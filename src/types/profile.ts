@@ -31,3 +31,14 @@ export const getProfileValue = (user: User | ExtendedUser | null, key: keyof Use
   }
   return null;
 };
+
+// Helper type guard to check if a value is a string
+export const isString = (value: any): value is string => {
+  return typeof value === 'string';
+};
+
+// Helper type guard to check if a value is a number
+export const isNumber = (value: any): value is number => {
+  return typeof value === 'number';
+};
+
