@@ -7,9 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// We'll simulate importing framer-motion
-const MotionDiv = motion.div;
-const MotionCard = motion.div;
+const MotionCard = motion(Card);
 
 const Fitness = () => {
   const { categories, setCurrentCategory } = useFitness();
@@ -23,7 +21,7 @@ const Fitness = () => {
   return (
     <div className="py-6 space-y-6">
       <div className="flex items-center mb-6">
-        <Link to="/" className="mr-2">
+        <Link to="/">
           <Button
             variant="ghost"
             size="icon"
@@ -35,11 +33,11 @@ const Fitness = () => {
         <h1 className="text-3xl font-bold">Fitness Programs</h1>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {categories.map((category, index) => (
           <MotionCard
             key={category.id}
-            className={`fitness-card ${category.color} text-white cursor-pointer`}
+            className="relative overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300"
             onClick={() => handleCategorySelect(category.id)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -47,15 +45,24 @@ const Fitness = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            <div className="relative z-10 text-center p-6">
-              <h2 className="text-2xl font-bold mb-2">{category.name}</h2>
-              <p className="text-white/80">{category.description}</p>
-            </div>
+            <div className={`absolute inset-0 ${category.color} opacity-90`} />
+            <CardContent className="relative z-10 p-8">
+              <h2 className="text-2xl font-bold text-white mb-3">{category.name}</h2>
+              <p className="text-white/90 text-lg">{category.description}</p>
+              <div className="absolute bottom-4 right-4">
+                <Button 
+                  variant="secondary" 
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                >
+                  Get Started
+                </Button>
+              </div>
+            </CardContent>
           </MotionCard>
         ))}
       </div>
       
-      <MotionDiv
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
@@ -69,9 +76,10 @@ const Fitness = () => {
             </p>
           </CardContent>
         </Card>
-      </MotionDiv>
+      </motion.div>
     </div>
   );
 };
 
 export default Fitness;
+
