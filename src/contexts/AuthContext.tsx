@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -177,7 +178,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const addCoins = async (amount: number) => {
     if (user?.id) {
       try {
-        const { error } = await supabase.rpc('add_coins', { amount });
+        // Fix: Use an object parameter for 'add_coins' RPC call
+        const { error } = await supabase.rpc('add_coins', { amount: amount });
         if (error) throw error;
         
         setUser(currentUser => {
@@ -201,6 +203,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateStreak = async () => {
     if (user?.id) {
       try {
+        // Fix: No parameters needed for 'update_streak' RPC call
         const { error } = await supabase.rpc('update_streak');
         if (error) throw error;
         
