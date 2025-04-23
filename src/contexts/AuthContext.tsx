@@ -1,29 +1,16 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-  age?: number;
-  gender?: string;
-  weight?: number;
-  height?: number;
-  goal?: string;
-  fitnessLevel?: string;
-  healthIssues?: string;
-  coins: number;
-  streak: number;
-  lastCompletedDay?: string;
-}
+import { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
+  session: Session | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   updateUserProfile: (userData: Partial<User>) => void;
   addCoins: (amount: number) => void;
   updateStreak: () => void;
@@ -44,120 +31,112 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
-  
-  // Load user from localStorage on initial render
+  const [session, setSession] = useState<Session | null>(null);
+
   useEffect(() => {
-    const storedUser = localStorage.getItem("fitverse-user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
-    }
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsAuthenticated(!!session);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Save user to localStorage when it changes
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("fitverse-user", JSON.stringify(user));
-    }
-  }, [user]);
-
   const login = async (email: string, password: string) => {
-    // In a real app, this would be an API call
     try {
-      // Mock API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Mock user data - in real app, this would come from the API
-      const mockUser: User = {
-        id: "user-" + Math.random().toString(36).substr(2, 9),
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        name: email.split('@')[0],
-        coins: 0,
-        streak: 0
-      };
-      
-      setUser(mockUser);
-      setIsAuthenticated(true);
+        password,
+      });
+
+      if (error) throw error;
       toast.success("Logged in successfully!");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Failed to login. Please try again.");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to login");
+      throw error;
     }
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    // In a real app, this would be an API call
     try {
-      // Mock API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Mock user creation - in real app, this would be done on the server
-      const newUser: User = {
-        id: "user-" + Math.random().toString(36).substr(2, 9),
+      const { error } = await supabase.auth.signUp({
         email,
-        name,
-        coins: 0,
-        streak: 0
-      };
-      
-      setUser(newUser);
-      setIsAuthenticated(true);
-      toast.success("Account created successfully!");
-    } catch (error) {
-      console.error("Signup error:", error);
-      toast.error("Failed to create account. Please try again.");
+        password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
+      });
+
+      if (error) throw error;
+      toast.success("Account created successfully! Please check your email to verify your account.");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create account");
+      throw error;
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem("fitverse-user");
-    toast.success("Logged out successfully!");
-  };
-
-  const updateUserProfile = (userData: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
-      toast.success("Profile updated!");
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setUser(null);
+      setIsAuthenticated(false);
+      toast.success("Logged out successfully!");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to logout");
+      throw error;
     }
   };
 
-  const addCoins = (amount: number) => {
+  const updateUserProfile = async (userData: Partial<User>) => {
     if (user) {
-      const updatedUser = { ...user, coins: (user.coins || 0) + amount };
-      setUser(updatedUser);
-      toast.success(`You earned ${amount} coins!`);
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update(userData)
+          .eq('id', user.id);
+          
+        if (error) throw error;
+        toast.success("Profile updated!");
+      } catch (error: any) {
+        toast.error(error.message || "Failed to update profile");
+        throw error;
+      }
     }
   };
 
-  const updateStreak = () => {
+  const addCoins = async (amount: number) => {
     if (user) {
-      const today = new Date().toISOString().split('T')[0];
-      
-      // If user has already completed today, don't update
-      if (user.lastCompletedDay === today) return;
-      
-      // Check if last completion was yesterday to continue streak
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0];
-      
-      let newStreak = user.lastCompletedDay === yesterdayStr 
-        ? user.streak + 1 
-        : 1;
-      
-      const updatedUser = { 
-        ...user, 
-        streak: newStreak,
-        lastCompletedDay: today
-      };
-      
-      setUser(updatedUser);
-      
-      if (newStreak > 1) {
-        toast.success(`🔥 ${newStreak} day streak! Keep it up!`);
+      try {
+        const { error } = await supabase.rpc('add_coins', { amount });
+        if (error) throw error;
+        toast.success(`You earned ${amount} coins!`);
+      } catch (error: any) {
+        toast.error(error.message || "Failed to add coins");
+      }
+    }
+  };
+
+  const updateStreak = async () => {
+    if (user) {
+      try {
+        const { error } = await supabase.rpc('update_streak');
+        if (error) throw error;
+      } catch (error: any) {
+        console.error("Error updating streak:", error);
       }
     }
   };
@@ -165,6 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const value = {
     isAuthenticated,
     user,
+    session,
     login,
     signup,
     logout,
