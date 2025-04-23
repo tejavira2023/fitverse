@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { useFitness } from "@/contexts/FitnessContext";
@@ -37,7 +36,7 @@ const Fitness = () => {
         {categories.map((category, index) => (
           <MotionCard
             key={category.id}
-            className="relative overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300"
+            className="relative overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 bg-primary"
             onClick={() => handleCategorySelect(category.id)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -45,9 +44,8 @@ const Fitness = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            <div className={`absolute inset-0 ${category.color} opacity-90`} />
-            <CardContent className="relative z-10 p-8">
-              <h2 className="text-2xl font-bold text-white mb-3">{category.name}</h2>
+            <CardContent className="relative z-10 p-8 text-white">
+              <h2 className="text-2xl font-bold mb-3">{category.name}</h2>
               <p className="text-white/90 text-lg">{category.description}</p>
               <div className="absolute bottom-4 right-4">
                 <Button 
@@ -82,4 +80,3 @@ const Fitness = () => {
 };
 
 export default Fitness;
-
