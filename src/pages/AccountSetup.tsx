@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { getProfileValue } from "@/types/profile";
+import { UserProfile } from "@/types/profile";
 
 // We'll simulate importing framer-motion
 const MotionDiv = motion.div;
@@ -45,14 +47,17 @@ const AccountSetup = () => {
     setIsLoading(true);
     
     try {
-      const updatedData = {
-        ...formData,
+      const updatedData: Partial<UserProfile> = {
         age: formData.age ? parseInt(formData.age, 10) : undefined,
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
-        height: formData.height ? parseFloat(formData.height) : undefined
+        height: formData.height ? parseFloat(formData.height) : undefined,
+        gender: formData.gender,
+        goal: formData.goal,
+        fitnessLevel: formData.fitnessLevel,
+        healthIssues: formData.healthIssues
       };
       
-      updateUserProfile(updatedData);
+      await updateUserProfile(updatedData);
       toast.success("Profile setup complete!");
       navigate("/");
     } catch (error) {
@@ -100,7 +105,7 @@ const AccountSetup = () => {
                     <User className="size-8 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold">{user?.name || "User"}</h2>
+                    <h2 className="text-lg font-semibold">{getProfileValue(user, 'name') || "User"}</h2>
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
                 </div>

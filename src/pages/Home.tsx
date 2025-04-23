@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Activity, Award, MessageCircle, User } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getProfileValue } from "@/types/profile";
 
 // We'll simulate importing framer-motion
 const MotionButton = motion(Button);
@@ -43,11 +44,11 @@ const Home = () => {
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col items-center p-3 bg-white rounded-lg shadow-sm">
-              <div className="text-3xl font-bold text-primary">{user?.streak || 0}</div>
+              <div className="text-3xl font-bold text-primary">{getProfileValue(user, 'streak') || 0}</div>
               <div className="text-sm text-muted-foreground">Day Streak</div>
             </div>
             <div className="flex flex-col items-center p-3 bg-white rounded-lg shadow-sm">
-              <div className="text-3xl font-bold text-accent">{user?.coins || 0}</div>
+              <div className="text-3xl font-bold text-accent">{getProfileValue(user, 'coins') || 0}</div>
               <div className="text-sm text-muted-foreground">Total Coins</div>
             </div>
           </div>

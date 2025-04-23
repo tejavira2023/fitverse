@@ -3,15 +3,16 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { User, Session } from '@supabase/supabase-js';
+import { UserProfile, ExtendedUser } from "@/types/profile";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: User | null;
+  user: ExtendedUser | null;
   session: Session | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
-  updateUserProfile: (userData: Partial<User>) => void;
+  updateUserProfile: (userData: Partial<UserProfile>) => Promise<void>;
   addCoins: (amount: number) => void;
   updateStreak: () => void;
 }
@@ -30,24 +31,76 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ExtendedUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+
+  // Fetch user profile data
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        return;
+      }
+
+      if (data) {
+        // Update the user state with profile data
+        setUser(currentUser => {
+          if (!currentUser) return null;
+          return {
+            ...currentUser,
+            profile: data as UserProfile
+          };
+        });
+      }
+    } catch (error) {
+      console.error('Error in fetchUserProfile:', error);
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
-        setUser(session?.user ?? null);
         setIsAuthenticated(!!session);
+        
+        if (session?.user) {
+          // Use setTimeout to prevent potential Supabase authentication deadlock
+          setTimeout(() => {
+            // Initialize user with basic data
+            setUser({
+              ...session.user,
+              profile: {} as UserProfile
+            });
+            // Then fetch full profile data
+            fetchUserProfile(session.user.id);
+          }, 0);
+        } else {
+          setUser(null);
+        }
       }
     );
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
       setIsAuthenticated(!!session);
+      
+      if (session?.user) {
+        // Initialize user with basic data
+        setUser({
+          ...session.user,
+          profile: {} as UserProfile
+        });
+        // Then fetch full profile data
+        fetchUserProfile(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -101,8 +154,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const updateUserProfile = async (userData: Partial<User>) => {
-    if (user) {
+  const updateUserProfile = async (userData: Partial<UserProfile>) => {
+    if (user?.id) {
       try {
         const { error } = await supabase
           .from('profiles')
@@ -110,6 +163,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           .eq('id', user.id);
           
         if (error) throw error;
+        
+        // Update local state
+        setUser(currentUser => {
+          if (!currentUser) return null;
+          return {
+            ...currentUser,
+            profile: {
+              ...currentUser.profile,
+              ...userData
+            }
+          };
+        });
+        
         toast.success("Profile updated!");
       } catch (error: any) {
         toast.error(error.message || "Failed to update profile");
@@ -119,10 +185,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const addCoins = async (amount: number) => {
-    if (user) {
+    if (user?.id) {
       try {
         const { error } = await supabase.rpc('add_coins', { amount });
         if (error) throw error;
+        
+        // Update local state
+        setUser(currentUser => {
+          if (!currentUser?.profile) return currentUser;
+          return {
+            ...currentUser,
+            profile: {
+              ...currentUser.profile,
+              coins: (currentUser.profile.coins || 0) + amount
+            }
+          };
+        });
+        
         toast.success(`You earned ${amount} coins!`);
       } catch (error: any) {
         toast.error(error.message || "Failed to add coins");
@@ -131,10 +210,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateStreak = async () => {
-    if (user) {
+    if (user?.id) {
       try {
         const { error } = await supabase.rpc('update_streak');
         if (error) throw error;
+        
+        // Fetch updated profile data
+        fetchUserProfile(user.id);
       } catch (error: any) {
         console.error("Error updating streak:", error);
       }

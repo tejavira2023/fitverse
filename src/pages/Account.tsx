@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { User, Save, LogOut } from "lucide-react";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { getProfileValue } from "@/types/profile";
 
 // We'll simulate importing framer-motion
 const MotionDiv = motion.div;
@@ -18,16 +19,33 @@ const Account = () => {
   const { user, updateUserProfile, logout } = useAuth();
   
   const [formData, setFormData] = useState({
-    name: user?.name || "",
+    name: getProfileValue(user, 'name') || "",
     email: user?.email || "",
-    age: user?.age || "",
-    gender: user?.gender || "",
-    weight: user?.weight || "",
-    height: user?.height || "",
-    goal: user?.goal || "",
-    fitnessLevel: user?.fitnessLevel || "",
-    healthIssues: user?.healthIssues || ""
+    age: getProfileValue(user, 'age') || "",
+    gender: getProfileValue(user, 'gender') || "",
+    weight: getProfileValue(user, 'weight') || "",
+    height: getProfileValue(user, 'height') || "",
+    goal: getProfileValue(user, 'goal') || "",
+    fitnessLevel: getProfileValue(user, 'fitnessLevel') || "",
+    healthIssues: getProfileValue(user, 'healthIssues') || ""
   });
+  
+  // Update form data when user profile changes
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: getProfileValue(user, 'name') || "",
+        email: user.email || "",
+        age: getProfileValue(user, 'age') || "",
+        gender: getProfileValue(user, 'gender') || "",
+        weight: getProfileValue(user, 'weight') || "",
+        height: getProfileValue(user, 'height') || "",
+        goal: getProfileValue(user, 'goal') || "",
+        fitnessLevel: getProfileValue(user, 'fitnessLevel') || "",
+        healthIssues: getProfileValue(user, 'healthIssues') || ""
+      });
+    }
+  }, [user]);
   
   const [isLoading, setIsLoading] = useState(false);
   
@@ -46,13 +64,17 @@ const Account = () => {
     
     try {
       const updatedData = {
-        ...formData,
+        name: formData.name,
         age: formData.age ? parseInt(formData.age as string, 10) : undefined,
         weight: formData.weight ? parseFloat(formData.weight as string) : undefined,
-        height: formData.height ? parseFloat(formData.height as string) : undefined
+        height: formData.height ? parseFloat(formData.height as string) : undefined,
+        gender: formData.gender,
+        goal: formData.goal,
+        fitnessLevel: formData.fitnessLevel,
+        healthIssues: formData.healthIssues
       };
       
-      updateUserProfile(updatedData);
+      await updateUserProfile(updatedData);
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error(error);
@@ -98,7 +120,7 @@ const Account = () => {
                     <User className="size-10 text-primary" />
                   </div>
                   <div className="space-y-1">
-                    <h2 className="text-lg font-semibold">{user?.name || "User"}</h2>
+                    <h2 className="text-lg font-semibold">{getProfileValue(user, 'name') || "User"}</h2>
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
                 </div>
