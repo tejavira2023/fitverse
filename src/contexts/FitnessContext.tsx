@@ -514,12 +514,30 @@ export const FitnessProvider: React.FC<{ children: React.ReactNode }> = ({
       const storedLevels = localStorage.getItem(`fitverse-completed-levels-${user.id}`);
       if (storedLevels) {
         setCompletedLevels(JSON.parse(storedLevels));
+      } else {
+        // Important: Initialize with empty array for new users
+        setCompletedLevels([]);
       }
       
       const storedProgress = localStorage.getItem(`fitverse-today-progress-${user.id}`);
       if (storedProgress) {
         setTodaysProgress(JSON.parse(storedProgress));
+      } else {
+        // Important: Initialize with empty progress for new users
+        setTodaysProgress({
+          categoryId: null,
+          levelId: null,
+          completed: false
+        });
       }
+    } else {
+      // When no user is logged in, reset the states
+      setCompletedLevels([]);
+      setTodaysProgress({
+        categoryId: null,
+        levelId: null,
+        completed: false
+      });
     }
   }, [user]);
 
