@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -177,7 +178,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const addCoins = async (amount: number) => {
     if (user?.id) {
       try {
-        const { error } = await supabase.rpc('add_coins', { amount });
+        // Instead of using RPC, update the profiles table directly
+        const currentCoins = user.profile?.coins || 0;
+        const newCoins = currentCoins + amount;
+        
+        const { error } = await supabase
+          .from('profiles')
+          .update({ coins: newCoins })
+          .eq('id', user.id);
+          
         if (error) throw error;
         
         setUser(currentUser => {
@@ -186,13 +195,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             ...currentUser,
             profile: {
               ...currentUser.profile,
-              coins: (currentUser.profile.coins || 0) + amount
+              coins: newCoins
             }
           };
         });
         
         toast.success(`You earned ${amount} coins!`);
       } catch (error: any) {
+        console.error("Error adding coins:", error);
         toast.error(error.message || "Failed to add coins");
       }
     }
@@ -201,12 +211,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateStreak = async () => {
     if (user?.id) {
       try {
-        const { error } = await supabase.rpc('update_streak');
-        if (error) throw error;
+        // Instead of using RPC, update the streak directly
+        const today = new Date().toISOString().split('T')[0];
+        const lastCompletedDay = user.profile?.last_completed_day;
+        let newStreak = user.profile?.streak || 0;
         
-        fetchUserProfile(user.id);
+        // If there's no last completed day or it's not today
+        if (!lastCompletedDay || lastCompletedDay !== today) {
+          // Check if the last completed day was yesterday
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          const yesterdayStr = yesterday.toISOString().split('T')[0];
+          
+          if (lastCompletedDay === yesterdayStr) {
+            // If last completed day was yesterday, increment streak
+            newStreak += 1;
+          } else if (lastCompletedDay !== today) {
+            // If last completed day was neither yesterday nor today, reset streak
+            newStreak = 1;
+          }
+          
+          // Update the database
+          const { error } = await supabase
+            .from('profiles')
+            .update({
+              streak: newStreak,
+              last_completed_day: today
+            })
+            .eq('id', user.id);
+            
+          if (error) throw error;
+          
+          // Update local state
+          setUser(currentUser => {
+            if (!currentUser?.profile) return currentUser;
+            return {
+              ...currentUser,
+              profile: {
+                ...currentUser.profile,
+                streak: newStreak,
+                last_completed_day: today
+              }
+            };
+          });
+          
+          if (newStreak > 1) {
+            toast.success(`Streak updated! You're on a ${newStreak}-day streak!`);
+          } else {
+            toast.success(`First day completed! Keep going!`);
+          }
+        }
       } catch (error: any) {
         console.error("Error updating streak:", error);
+        toast.error(error.message || "Failed to update streak");
       }
     }
   };

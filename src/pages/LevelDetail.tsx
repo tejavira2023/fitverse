@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useFitness } from "@/contexts/FitnessContext";
@@ -23,7 +22,7 @@ interface QuizQuestion {
 const LevelDetail = () => {
   const { categoryId, levelNum } = useParams<{ categoryId: string; levelNum: string }>();
   const { categories, completeLevel } = useFitness();
-  const { addCoins } = useAuth();
+  const { addCoins, updateStreak } = useAuth();
   const navigate = useNavigate();
 
   const [videoCompleted, setVideoCompleted] = useState(false);
@@ -81,8 +80,14 @@ const LevelDetail = () => {
         setCurrentQuestion(currentQuestion + 1);
       } else {
         setQuizCompleted(true);
+        
+        // Ensure we update the streak and add coins
         completeLevel(level.id);
-        addCoins(5); // Add 5 coins for completing the level
+        
+        // Important: Make sure that addCoins and updateStreak are properly called
+        addCoins(5);
+        updateStreak();
+        
         setShowConfetti(true);
       }
     }, 1500);
